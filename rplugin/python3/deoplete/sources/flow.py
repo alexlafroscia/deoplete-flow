@@ -40,12 +40,20 @@ class Source(Base):
             current_directory = self.vim.eval("expand('%:p:h')")
             self._project_directory = find_config_directory(current_directory)
 
+        if not self._project_directory:
+            return None
+
         filename = self.vim.eval("expand('%:p')")
 
         return filename[len(self._project_directory) + 1:]
 
     def gather_candidates(self, context):
         file_name = self.relative_file()
+
+        if not file_name:
+            log.debug('No flow config found; skipping');
+            return []
+
         line = str(self.vim.current.window.cursor[0])
         column = str(self.vim.current.window.cursor[1] + 1)
         command = [self.flow_bin, 'autocomplete', '--json', '--no-auto-start', file_name, line, column]
