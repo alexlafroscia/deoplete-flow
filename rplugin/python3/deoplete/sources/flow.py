@@ -11,13 +11,14 @@ log = getLogger('logging')
 CONFIG_FILE = '.flowconfig'
 
 def find_config_directory(root):
-    for files in os.listdir(root):
-        if CONFIG_FILE in files:
-            return root
-        elif root == '/':
-            return None
-        else:
-            return find_config_directory(os.path.dirname(root))
+    log.debug('Searching: ' + root);
+
+    if CONFIG_FILE in os.listdir(root):
+        return root
+    elif root == '/':
+        return None
+    else:
+        return find_config_directory(os.path.dirname(root))
 
 class Source(Base):
     def __init__(self, vim):
